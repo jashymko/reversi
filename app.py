@@ -4,6 +4,7 @@
 """
 import pygame
 from reversi import Reversi
+from minimax import Minimax
 
 #          BG Color,    P1 Color,    P2 Color,    Outline Color
 COLORS = ((0, 128, 0), (0, 0, 0), (255, 255, 255), (0, 0, 0))
@@ -11,9 +12,10 @@ WIDTH, HEIGHT = (540, 540)
 
 ################################################################
 
-screen = None
 game = Reversi()
+minimax = Minimax()
 
+screen = None
 mouse_held = False
 
 
@@ -22,7 +24,7 @@ def init_game():
 
     pygame.init()
     pygame.display.set_caption("Reversi")
-    pygame.display.set_icon(pygame.image.load("icon.png"))
+    pygame.display.set_icon(pygame.image.load("icons/icon.png"))
 
     screen = pygame.display.set_mode((WIDTH, HEIGHT))
 
@@ -48,12 +50,13 @@ def handle_events():
     if pressed and not mouse_held:
         mouse_held = True
 
-    elif mouse_held and not pressed:    # Mouseup
+    elif mouse_held and not pressed:    # Mouseup, change to < elif True > for auto-run
         mouse_held = False
-        mouse_x, mouse_y = pygame.mouse.get_pos()
-        mouse_x = game.GRID_W*mouse_x // WIDTH
-        mouse_y = game.GRID_W*mouse_y // HEIGHT
-        game.move(mouse_x, mouse_y)
+        if game.turn == game.P_TURN:
+            random_turn()
+            # user_turn()
+        else:
+            minimax_turn()
 
 
 def draw_all():
@@ -71,11 +74,28 @@ def draw_all():
                 pygame.draw.circle(screen, COLORS[cell], (int((column + 0.5) * WIDTH/game.GRID_W), int((row + 0.5) * HEIGHT/game.GRID_W)), min(WIDTH, HEIGHT)/(2*game.GRID_W) - 2)
 
     # Draw Markers
-    for move in game.find_moves():
+    for move in game.find_moves(game.grid, game.turn):
         column, row = move[0]
         pygame.draw.circle(screen, COLORS[game.turn], (int((column + 0.5) * WIDTH/game.GRID_W), int((row + 0.5) * HEIGHT/game.GRID_W)), min(WIDTH, HEIGHT) / (16*game.GRID_W))
 
     pygame.display.update()
+
+
+def user_turn():
+    mouse_x, mouse_y = pygame.mouse.get_pos()
+    mouse_x = game.GRID_W * mouse_x // WIDTH
+    mouse_y = game.GRID_W * mouse_y // HEIGHT
+    game.full_turn(mouse_x, mouse_y)
+
+
+def random_turn():
+    move = minimax.random_move(game)[0]
+    game.full_turn(move[0], move[1])
+
+
+def minimax_turn():
+    move = minimax.best_move(game)[0]
+    game.full_turn(move[0], move[1])
 
 
 init_game()
