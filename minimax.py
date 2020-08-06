@@ -14,17 +14,15 @@ class Minimax:
         depth = 0
         grid = game.grid
         turn = game.turn
-        for move in game.find_moves(grid, turn):
-            score = self.minimax(game, copy.deepcopy(grid), turn, depth)
-            if score > best_score:
-                best_score = score
-                best_move = move
-        if best_move:
-            return best_move
-        elif game.find_moves(grid, turn):
-            return game.find_moves(grid, turn)[0]
+        if game.find_moves(grid, turn):
+            for move in game.find_moves(grid, turn):
+                score = self.minimax(game, copy.deepcopy(grid), turn, depth)
+                if score > best_score:
+                    best_score = score
+                    best_move = move
         else:
-            return [[None, None], None]
+            best_move = [[None, None], None]
+        return best_move
 
 
     def random_move(self, game):
@@ -36,19 +34,19 @@ class Minimax:
         return move
 
 
-    def minimax(self, game, grid, turn, depth):     # FIX 3 ARGUMENT ISSUE
+    def minimax(self, game, grid, turn, depth):
         best_score = N_INFINITY
         depth += 1
-        for move in game.find_moves(grid, turn):
-            if depth < self.max_depth:
+        if depth < self.max_depth and game.find_moves(grid, turn):
+            for move in game.find_moves(grid, turn):
                 grid = game.move(move[0][0], move[0][1], grid, turn)
                 score = self.minimax(game, copy.deepcopy(grid), turn, depth)
                 if turn == game.P_TURN:
                     score *= -1
                 if score > best_score:
                     best_score = score
-            else:
-                best_score = self.eval_grid(game, grid)
+        else:
+            best_score = self.eval_grid(game, grid)
         return best_score
 
 
