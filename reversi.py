@@ -8,9 +8,8 @@ class Reversi:
         self.grid[3][3], self.grid[3][4],       \
         self.grid[4][3], self.grid[4][4] = 2, 1,\
                                            1, 2     # My bad
-        self.P_TURN = 1     # Black
-        self.AI_TURN = 2    # White
-        self.turn = self.P_TURN
+
+        self.turn = 1
 
     def opp(self, turn):
         return 3 - turn
@@ -34,10 +33,10 @@ class Reversi:
         return
 
     def count_score(self, grid):
-        count = [0, 0]
+        count = [0, 0, 0]
         for row in grid:
             for cell in row:
-                count[cell-1] += 1
+                count[cell] += 1
         return count
 
     def find_moves(self, grid, turn):
@@ -92,8 +91,8 @@ class Reversi:
     def game_over(self):
         count = self.count_score(self.grid)
         players = ["Black", "White"]
-        if count[0] != count[1]:
-            print players[count.index(max(count[0], count[1]))], "wins!"
-            print "White:", count[1], ", Black:", count[0]
+        if count[1] != count[2]:
+            print players[count.index(max(count[2], count[1])) - 1], "wins!"
+            print "White:", count[2], ", Black:", count[1]
         else:
             print "Tie!"

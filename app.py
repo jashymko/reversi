@@ -50,13 +50,12 @@ def handle_events():
     if pressed and not mouse_held:
         mouse_held = True
 
-    elif mouse_held and not pressed:    # Mouseup, change to < elif True > for auto-run
+    elif mouse_held and not pressed:    # Mouseup, change to < elif True: > for auto-run
         mouse_held = False
-        if game.turn == game.P_TURN:
-            random_turn()
-            # user_turn()
+        if game.turn == 1:
+            user_turn()         # minimax_turn(depth), random_turn(), or user_turn()
         else:
-            minimax_turn()
+            minimax_turn(2)
 
 
 def draw_all():
@@ -93,8 +92,8 @@ def random_turn():
     game.full_turn(move[0], move[1])
 
 
-def minimax_turn():
-    move = minimax.best_move(game)[0]
+def minimax_turn(depth):
+    move = minimax.best_move(game, depth)[0]
     game.full_turn(move[0], move[1])
 
 
