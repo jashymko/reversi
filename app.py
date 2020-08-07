@@ -3,6 +3,7 @@
 - Make it look pretty
 """
 import pygame
+import time
 from reversi import Reversi
 from minimax import Minimax
 
@@ -50,10 +51,11 @@ def handle_events():
     if pressed and not mouse_held:
         mouse_held = True
 
-    elif mouse_held and not pressed:    # Mouseup, change to < elif True: > for auto-run
+    elif mouse_held and not pressed:    # On mouseup
+        #time.sleep(0.25)        # Uncomment and change to elif True to auto-run
         mouse_held = False
         if game.turn == 1:
-            user_turn()         # minimax_turn(depth), random_turn(), or user_turn()
+            minimax_turn(1)         # minimax_turn(depth), random_turn(), or user_turn()
         else:
             minimax_turn(2)
 
